@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b5cad">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Lịch cắt điện">
+<title>Lịch công tác cắt điện – Tổ QLVH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3f5f8; --card:#fff; --ink:#15202b; --muted:#5d6b7a; --line:#e2e7ee;
+  --brand:#0b5cad; --brand-soft:#e6f0fb;
+  --red:#c62828; --red-soft:#fdecec; --amber:#b26a00; --amber-soft:#fff4e0;
+  --green:#2e7d32; --green-soft:#e8f5e9; --grey-soft:#eef1f4;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0f141a; --card:#18202a; --ink:#e7edf3; --muted:#9aa8b6; --line:#27313d;
+  --brand:#5aa2ef; --brand-soft:#16283c; --red:#ff7b7b; --red-soft:#3a1d1f;
+  --amber:#ffb84d; --amber-soft:#3a2c15; --green:#7bd389; --green-soft:#1b3121; --grey-soft:#222b36;
+}}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.45}
+header{position:sticky;top:0;z-index:5;background:var(--brand);color:#fff;padding:calc(14px + env(safe-area-inset-top)) 16px 10px}
+header .top{display:flex;align-items:center;gap:8px}header .top h1{flex:1}
+.ib{border:0;background:rgba(255,255,255,.16);color:#fff;border-radius:10px;padding:6px 10px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+#lock{position:fixed;inset:0;z-index:20;background:var(--bg);display:none;align-items:center;justify-content:center;padding:24px}
+#lock .box{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 20px;max-width:360px;width:100%;text-align:center}
+#lock img{width:72px;height:72px;border-radius:16px}
+#lock h2{margin:12px 0 4px;font-size:19px}#lock p{margin:0 0 14px;color:var(--muted);font-size:14px}
+#lock input{width:100%;font:inherit;font-size:18px;letter-spacing:2px;text-align:center;text-transform:uppercase;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+#lock button{margin-top:12px;width:100%;border:0;border-radius:12px;padding:12px;font:inherit;font-weight:700;font-size:16px;background:var(--brand);color:#fff;cursor:pointer}
+#lock .msg{color:var(--red);font-size:13px;min-height:18px;margin-top:8px}
+.off{background:var(--amber-soft);color:var(--amber);font-size:12.5px;text-align:center;padding:5px;display:none}
+main{padding-bottom:calc(40px + env(safe-area-inset-bottom))}
+header h1{margin:0;font-size:18px;font-weight:700;letter-spacing:.2px}
+header .sub{font-size:12.5px;opacity:.85;margin-top:2px}
+.tabs{display:flex;gap:6px;margin-top:10px;overflow-x:auto;scrollbar-width:none}
+.tabs button{flex:0 0 auto;border:0;border-radius:999px;padding:7px 13px;font:inherit;font-size:13.5px;font-weight:600;background:rgba(255,255,255,.16);color:#fff;cursor:pointer}
+.tabs button.on{background:#fff;color:var(--brand)}
+.tabs .n{display:inline-block;min-width:18px;margin-left:5px;padding:0 5px;border-radius:9px;font-size:11.5px;background:rgba(0,0,0,.18)}
+.tabs button.on .n{background:var(--brand-soft)}
+.tools{padding:10px 12px 4px;display:flex;flex-wrap:wrap;gap:8px;max-width:760px;margin:0 auto}
+.tools input,.tools select{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:9px 11px}
+.tools input{flex:1 1 220px}
+.tools select{flex:1 1 140px}
+.chk{white-space:nowrap;display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--muted);padding:4px 2px}
+main{max-width:760px;margin:0 auto;padding:4px 12px 40px}
+.day{margin:16px 2px 8px;font-weight:700;font-size:14px;color:var(--muted);display:flex;justify-content:space-between}
+.day.today{color:var(--brand)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 13px;margin-bottom:10px;cursor:pointer;border-left:5px solid var(--line)}
+.card.md{border-left-color:var(--red)}
+.card.km{border-left-color:var(--green)}
+.row1{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.time{font-size:19px;font-weight:700;letter-spacing:.3px}
+.time small{font-size:12px;font-weight:500;color:var(--muted);margin-left:4px}
+.badge{font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.b-md{background:var(--red-soft);color:var(--red)}
+.b-km{background:var(--green-soft);color:var(--green)}
+.b-now{background:var(--amber-soft);color:var(--amber)}
+.b-done{background:var(--grey-soft);color:var(--muted)}
+.b-up{background:var(--brand-soft);color:var(--brand)}
+.b-warn{background:var(--amber-soft);color:var(--amber)}
+.sp{flex:1}
+.meta{font-size:13px;color:var(--muted);margin-top:4px}
+.chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.chip{font-size:12px;font-weight:600;padding:2px 8px;border-radius:6px;background:var(--grey-soft)}
+.nd{margin-top:7px;white-space:pre-line}
+.card:not(.open) .nd{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.more{display:none;margin-top:10px;border-top:1px dashed var(--line);padding-top:10px}
+.card.open .more{display:block}
+.more h4{margin:10px 0 3px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+.more h4:first-child{margin-top:0}
+.more p{margin:0;white-space:pre-line;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+.grid div{background:var(--grey-soft);border-radius:8px;padding:6px 8px;font-size:12px;color:var(--muted)}
+.grid b{display:block;font-size:14px;color:var(--ink)}
+.empty{text-align:center;color:var(--muted);padding:40px 10px}
+.foot{font-size:12px;color:var(--muted);margin-top:24px;text-align:center}
+.err{background:var(--amber-soft);color:var(--amber);border-radius:10px;padding:8px 10px;font-size:13px;margin-top:10px}
+</style>
+</head>
+<body>
+<header>
+  <div class="top"><h1>Lịch công tác cắt điện</h1><button class="ib" id="reload" title="Tải lại">⟳</button></div>
+  <div class="sub" id="upd">Đang tải…</div>
+  <div class="tabs" id="tabs"></div>
+</header>
+<div class="off" id="off">Đang ngoại tuyến – hiển thị dữ liệu đã lưu</div>
+<div id="lock"><form class="box" id="lockf"><img src="icon-192.png" alt=""><h2>Lịch cắt điện – Tổ QLVH</h2><p>Nhập mã truy cập do tổ trưởng cung cấp</p><input id="code" autocomplete="off" autocapitalize="characters" placeholder="Mã truy cập"><button type="submit">Mở lịch</button><div class="msg" id="lmsg"></div></form></div>
+<div class="tools">
+  <input id="q" type="search" placeholder="Tìm TBA, RMU, tuyến, đơn vị…">
+  <select id="tuyen"><option value="">Tất cả tuyến</option></select>
+  <label class="chk"><input type="checkbox" id="onlyMd"> Chỉ lịch có mất điện</label>
+</div>
+<main id="list"></main>
+
+<script>
+const TABS=[["today","Hôm nay"],["tomorrow","Ngày mai"],["week","7 ngày tới"],["upcoming","Sắp tới"],["past","Đã qua"],["all","Tất cả"]];
+const WD=["Chủ nhật","Thứ Hai","Thứ Ba","Thứ Tư","Thứ Năm","Thứ Sáu","Thứ Bảy"];
+let DATA={items:[]},state={tab:"today",q:"",tuyen:"",onlyMd:false};
+try{Object.assign(state,JSON.parse(localStorage.getItem("lcd_state")||"{}"));state.q=""}catch(e){}
+const save=()=>{try{localStorage.setItem("lcd_state",JSON.stringify({tab:state.tab,tuyen:state.tuyen,onlyMd:state.onlyMd}))}catch(e){}};
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function nowVN(){const d=new Date(Date.now()+7*3600e3);return {date:d.toISOString().slice(0,10),min:d.getUTCHours()*60+d.getUTCMinutes()}}
+function addDays(iso,n){const d=new Date(iso+"T00:00:00Z");d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10)}
+const toMin=t=>{const m=/(\d+):(\d+)/.exec(t||"");return m?+m[1]*60+ +m[2]:null};
+function fmtDay(iso){const d=new Date(iso+"T00:00:00Z");return `${WD[d.getUTCDay()]}, ${iso.slice(8,10)}/${iso.slice(5,7)}/${iso.slice(0,4)}`}
+function start(it){return it.cat_tu||it.tu} function end(it){return it.cat_den||it.den}
+
+function status(it,n){
+  if(it.ngay<n.date) return "done"; if(it.ngay>n.date) return "up";
+  const s=toMin(start(it)),e=toMin(end(it));
+  if(e!=null&&n.min>e) return "done"; if(s!=null&&n.min>=s) return "now"; return "up";
+}
+function conflicts(items){
+  const map={};
+  for(const a of items) for(const b of items){
+    if(a===b||a.ngay!==b.ngay) continue;
+    const sh=a.tuyen.filter(t=>b.tuyen.includes(t)); if(!sh.length) continue;
+    const as=toMin(start(a)),ae=toMin(end(a)),bs=toMin(start(b)),be=toMin(end(b));
+    if(as<be&&bs<ae&&a.so_vb!==b.so_vb)(map[a.id]=map[a.id]||new Set()).add(sh.join(", "));
+  }
+  return map;
+}
+function inTab(it,tab,n){
+  const t1=addDays(n.date,1),w=addDays(n.date,6);
+  return tab==="today"?it.ngay===n.date:tab==="tomorrow"?it.ngay===t1:tab==="week"?(it.ngay>=n.date&&it.ngay<=w)
+   :tab==="upcoming"?it.ngay>=n.date:tab==="past"?it.ngay<n.date:true;
+}
+function passes(it){
+  if(state.onlyMd&&!it.mat_dien) return false;
+  if(state.tuyen&&!it.tuyen.includes(state.tuyen)) return false;
+  if(state.q){const q=state.q.toLowerCase();const s=[it.noi_dung,it.thao_tac,it.khu_vuc,it.don_vi,it.tuyen.join(" "),it.so_vb].join(" ").toLowerCase();if(!s.includes(q))return false}
+  return true;
+}
+function render(){
+  const n=nowVN(),items=DATA.items.filter(passes),conf=conflicts(DATA.items);
+  document.getElementById("tabs").innerHTML=TABS.map(([k,l])=>`<button data-k="${k}" class="${state.tab===k?"on":""}">${l}<span class="n">${items.filter(i=>inTab(i,k,n)).length}</span></button>`).join("");
+  let list=items.filter(i=>inTab(i,state.tab,n));
+  if(state.tab==="past") list=list.slice().reverse();
+  const el=document.getElementById("list");
+  if(!list.length){el.innerHTML=`<div class="empty">Không có lịch công tác nào${state.tab==="today"?" hôm nay":state.tab==="tomorrow"?" ngày mai":""}.</div>`+foot();return}
+  let html="",cur="";
+  for(const it of list){
+    if(it.ngay!==cur){cur=it.ngay;const c=list.filter(x=>x.ngay===cur).length;html+=`<div class="day ${cur===n.date?"today":""}"><span>${cur===n.date?"Hôm nay · ":""}${fmtDay(cur)}</span><span>${c} công tác</span></div>`}
+    const st=status(it,n),stL={done:["b-done","Đã qua"],now:["b-now","Đang thực hiện"],up:["b-up","Sắp tới"]}[st];
+    const cf=conf[it.id];
+    html+=`<div class="card ${it.mat_dien?"md":"km"}" data-id="${it.id}">
+      <div class="row1"><span class="time">${esc(start(it))}–${esc(end(it))}<small>cắt điện</small></span><span class="sp"></span>
+        <span class="badge ${it.mat_dien?"b-md":"b-km"}">${it.mat_dien?"Mất điện":"Không mất điện"}</span>
+        <span class="badge ${stL[0]}">${stL[1]}</span></div>
+      <div class="meta">Công tác ${esc(it.tu)}–${esc(it.den)} · <b>${esc(it.don_vi)}</b>${it.dv_ptt?` · PTT: ${esc(it.dv_ptt)}`:""}</div>
+      ${it.tuyen.length||cf?`<div class="chips">${it.tuyen.map(t=>`<span class="chip">${esc(t)}</span>`).join("")}${cf?`<span class="badge b-warn">⚠ Trùng giờ, cùng tuyến ${esc([...cf].join(", "))}</span>`:""}</div>`:""}
+      <div class="nd">${esc(it.noi_dung)}</div>
+      <div class="more">
+        <h4>Nội dung thao tác</h4><p>${esc(it.thao_tac)||"—"}</p>
+        <h4>Khu vực ngừng, giảm mức CCĐ</h4><p>${esc(it.khu_vuc)||"—"}</p>
+        <div class="grid"><div>Số KH ảnh hưởng<b>${esc(it.so_kh)||"—"}</b></div><div>SAIDI<b>${esc(it.saidi)||"—"}</b></div><div>SAIFI<b>${esc(it.saifi)||"—"}</b></div></div>
+        <h4>Văn bản</h4><p>${esc(it.loai_vb)}${it.so_vb?` · Số ${esc(it.so_vb)}`:""}${it.ngay_vb?` · ngày ${it.ngay_vb.split("-").reverse().join("/")}`:""}${it.ly_do?`\nLý do: ${esc(it.ly_do)}`:""}\nFile: ${esc(it.file)} · Mục ${esc(it.tt)}</p>
+      </div></div>`;
+  }
+  el.innerHTML=html+foot();
+}
+function foot(){
+  const e=(DATA.loi||[]).length?`<div class="err">File chưa đọc được:<br>${DATA.loi.map(esc).join("<br>")}</div>`:"";
+  return `${e}<div class="foot">Nguồn: ${(DATA.files||[]).length} file trong thư mục PHUONG THUC CAT DIEN · Bấm vào thẻ để xem chi tiết</div>`;
+}
+document.getElementById("tabs").onclick=e=>{const b=e.target.closest("button");if(b){state.tab=b.dataset.k;save();render();scrollTo(0,0)}};
+document.getElementById("list").onclick=e=>{const c=e.target.closest(".card");if(c)c.classList.toggle("open")};
+document.getElementById("q").oninput=e=>{state.q=e.target.value.trim();render()};
+document.getElementById("tuyen").onchange=e=>{state.tuyen=e.target.value;save();render()};
+document.getElementById("onlyMd").onchange=e=>{state.onlyMd=e.target.checked;save();render()};
+
+const b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function decrypt(enc,code){
+  const km=await crypto.subtle.importKey("raw",new TextEncoder().encode(code.trim().toUpperCase()),"PBKDF2",false,["deriveKey"]);
+  const key=await crypto.subtle.deriveKey({name:"PBKDF2",salt:b64(enc.salt),iterations:enc.iter,hash:"SHA-256"},km,{name:"AES-GCM",length:256},false,["decrypt"]);
+  const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:b64(enc.iv)},key,b64(enc.ct));
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+let ENC=null;
+const getCode=()=>{try{return localStorage.getItem("lcd_code")||""}catch(e){return ""}};
+const setCode=c=>{try{c?localStorage.setItem("lcd_code",c):localStorage.removeItem("lcd_code")}catch(e){}};
+function showLock(msg){document.getElementById("lock").style.display="flex";document.getElementById("lmsg").textContent=msg||"";setTimeout(()=>document.getElementById("code").focus(),50)}
+function apply(d){
+  DATA=d;
+  const tys=[...new Set(d.items.flatMap(i=>i.tuyen))].sort();
+  const sel=document.getElementById("tuyen");
+  if(!tys.includes(state.tuyen)) state.tuyen="";
+  sel.innerHTML=`<option value="">Tất cả tuyến</option>`+tys.map(t=>`<option ${t===state.tuyen?"selected":""}>${esc(t)}</option>`).join("");
+  document.getElementById("onlyMd").checked=state.onlyMd;
+  const u=d.cap_nhat||"";document.getElementById("upd").textContent=`Tổ QLVH · Điện lực Hải Châu · Cập nhật ${u.slice(11)} ${u.slice(8,10)}/${u.slice(5,7)}/${u.slice(0,4)}`;
+  render();
+}
+async function unlock(code){
+  try{const d=await decrypt(ENC,code);setCode(code.trim().toUpperCase());document.getElementById("lock").style.display="none";apply(d);return true}
+  catch(e){return false}
+}
+async function load(){
+  document.getElementById("upd").textContent="Đang tải…";
+  try{ENC=await (await fetch("data.enc.json?t="+Date.now(),{cache:"no-store"})).json();document.getElementById("off").style.display="none"}
+  catch(e){try{ENC=await (await fetch("data.enc.json")).json()}catch(e2){}document.getElementById("off").style.display="block"}
+  if(!ENC){document.getElementById("upd").textContent="Không tải được dữ liệu";return}
+  const c=getCode();
+  if(!c||!(await unlock(c))) showLock(c?"Mã truy cập đã thay đổi, vui lòng nhập mã mới":"");
+}
+document.getElementById("lockf").onsubmit=async e=>{e.preventDefault();const c=document.getElementById("code").value;if(!c.trim())return;
+  document.getElementById("lmsg").textContent="Đang mở…";if(!(await unlock(c)))document.getElementById("lmsg").textContent="Mã truy cập không đúng"};
+document.getElementById("reload").onclick=()=>load();
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")load()});
+window.addEventListener("online",()=>load());
+load(); setInterval(render,60000);
+if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
+</body>
+</html>
