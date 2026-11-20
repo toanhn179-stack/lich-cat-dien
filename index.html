@@ -184,8 +184,14 @@ const b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 async function decrypt(enc,code){
   const km=await crypto.subtle.importKey("raw",new TextEncoder().encode(code.trim().toUpperCase()),"PBKDF2",false,["deriveKey"]);
   const key=await crypto.subtle.deriveKey({name:"PBKDF2",salt:b64(enc.salt),iterations:enc.iter,hash:"SHA-256"},km,{name:"AES-GCM",length:256},false,["decrypt"]);
-  const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:b64(enc.iv)},key,b64(enc.ct));
+  let pt=new Uint8Array(await crypto.subtle.decrypt({name:"AES-GCM",iv:b64(enc.iv)},key,b64(enc.ct)));
+  if(enc.z==="gzip") pt=await gunzip(pt);
   return JSON.parse(new TextDecoder().decode(pt));
+}
+async function gunzip(u8){
+  if(window.DecompressionStream) return new Uint8Array(await new Response(new Blob([u8]).stream().pipeThrough(new DecompressionStream("gzip"))).arrayBuffer());
+  if(!window.pako) await new Promise((ok,no)=>{const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js";s.onload=ok;s.onerror=no;document.head.appendChild(s)});
+  return pako.ungzip(u8);
 }
 let ENC=null;
 const getCode=()=>{try{return localStorage.getItem("lcd_code")||""}catch(e){return ""}};
